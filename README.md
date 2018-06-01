@@ -148,5 +148,5 @@ if __name__ == "__main__":
 
 **图片示例如下**：
 
-![验证码图片样例](Zebra-zzzz/Verification-Code-Recognition/VER.1 Verification/Verification-Code-sample.png)
+![验证码图片样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.1%20%20Verification/Verification-Code-sample.png)
 ![验证码图片样例](Verification-Code-sample.png)

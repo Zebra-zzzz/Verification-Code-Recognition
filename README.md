@@ -192,5 +192,5 @@ if __name__ == '__main__':
 
 **本实验采用Python软件作为英文文字识别的工具**
 
-虽然Python现在已有较为常用的光学字符识别包pytesseract，但是最后的识别率并不是很高。所以选择了目前更为主流的深度学习进行验证码的训练和验证。查阅了相关资料后，CNN特别适用于对于图片的识别，故决定选用名为Keras的深度学习框架搭建CNN。在参考学习了名为The Happy House的model（来自于Coursera上面的名叫deeplearning.ai的课程的Couse4-Week2，用于识别人脸是否开心） 之后，自行对应教学文档的格式写出了适用于验证码识别的程序，并修改了部分卷积神经网络的结构。
+虽然Python现在已有较为常用的光学字符识别包pytesseract，但是最后的识别率并不是很高。所以选择了目前更为主流的深度学习进行验证码的训练和验证。查阅了相关资料后，CNN特别适用于对于图片的识别，故决定选用名为Keras的深度学习框架搭建CNN。在参考学习了Coursera上由deeplearning.ai开设的深度学习课程（[Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)），具体为第四门课（[Convolutional Neural Networks](https://www.coursera.org/learn/convolutional-neural-networks)）第二周目名为The Happy House的model（用于识别人脸是否开心），自行对应教学文档的格式写出了适用于验证码识别的程序，并修改了部分卷积神经网络的结构。
 

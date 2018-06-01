@@ -142,11 +142,55 @@ if __name__ == "__main__":
     d1 = f.create_dataset('test_codename', data=code_list_asc)
 ```
 
-同时利用以下代码（`/VER.1 Verification/createDataset.py`）**生成datesets**并放入了`/VER.1 Verification/datasets`的文件夹内。
+同时利用以下代码（`/VER.1 Verification/createDataset.py`）**生成datesets**并放入了`/VER.1 Verification/datasets`的文件夹内：
+```
+import h5py
+from PIL import Image
+import numpy as np
+
+def createTrainSet():
+    trainList = []
+    f=h5py.File("./datasets/codes.hdf5","r+")
+    dset_code = f['train_codename']
+    # print(dset.shape)
+    for i in dset_code.value:
+        # print(i.decode())
+        name = i.decode()
+        img = Image.open("./images/{}.jpg".format(name))
+        imgMatrix = np.array(img)
+        trainList.append(imgMatrix)
+    # print(trainList[1].shape)
+    f.create_dataset('train_images', data=trainList)
+
+def createTestSet():
+    testList = []
+    f=h5py.File("./datasets/codes.hdf5","r+")
+    dset_code = f['test_codename']
+    # print(dset.shape)
+    for i in dset_code.value:
+        # print(i.decode())
+        name = i.decode()
+        img = Image.open("./images/{}.jpg".format(name))
+        imgMatrix = np.array(img)
+        testList.append(imgMatrix)
+    # print(trainList[1].shape)
+    f.create_dataset('test_images', data=testList)
+
+
+if __name__ == '__main__':
+    createTrainSet()
+    createTestSet()
+```
 
 每张图片由任意4个数字和大小写英文字母组成，并同时加入随机不同颜色的若干干扰字。
 
 **图片示例如下**：
 
 ![验证码图片样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.1%20%20Verification/Verification-Code-sample.png)
-![验证码图片样例](Verification-Code-sample.png)
+
+### 方法挑选
+
+**本实验采用Python软件作为英文文字识别的工具**
+
+虽然Python现在已有较为常用的光学字符识别包pytesseract，但是最后的识别率并不是很高。所以选择了目前更为主流的深度学习进行验证码的训练和验证。查阅了相关资料后，CNN特别适用于对于图片的识别，故决定选用名为Keras的深度学习框架搭建CNN。在参考学习了名为The Happy House的model（来自于Coursera上面的名叫deeplearning.ai的课程的Couse4-Week2，用于识别人脸是否开心） 之后，自行对应教学文档的格式写出了适用于验证码识别的程序，并修改了部分卷积神经网络的结构。
+

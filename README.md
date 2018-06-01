@@ -149,3 +149,4 @@ if __name__ == "__main__":
 **图片示例如下**：
 
 ![验证码图片样例](VER.1 Verification/Verification-Code-sample.png)
+![验证码图片样例](VER.1 Verification/Verification-Code-sample.png)

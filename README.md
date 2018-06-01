@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
 虽然Python现在已有较为常用的光学字符识别包pytesseract，但是最后的识别率并不是很高。所以选择了目前更为主流的深度学习进行验证码的训练和验证。查阅了相关资料后，CNN特别适用于对于图片的识别，故决定选用名为Keras的深度学习框架搭建CNN。在参考学习了Coursera上由deeplearning.ai开设的深度学习课程（[Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)）之后，具体为第四门课（[Convolutional Neural Networks](https://www.coursera.org/learn/convolutional-neural-networks)）第二周目名为The Happy House的model（用于识别人脸是否开心）（`/VER.1 Verification/Keras+-+Tutorial+-+Happy+House+v2.ipynb`），自行对应教学文档的格式写出了适用于验证码识别的程序，并修改了部分卷积神经网络的结构。
 
-**完整代码（训练+验证）（`/VER.1 Verification/model.py`）如下**，jupyter notebook格式（`/VER.1 Verification/model.ipynb`）：
+**完整代码（训练+验证）**（`/VER.1 Verification/model.py`）如下，jupyter notebook格式（`/VER.1 Verification/model.ipynb`）：
 ```
 import keras.backend as K
 import matplotlib.pyplot as plt
@@ -373,7 +373,8 @@ img = np.asarray(im)
 imshow(img)
 y_pred = cnnModel.predict(np.asarray([img]))
 ```
-**NOTE:** 选择CNN进行训练的原因：
+**NOTE:** *选择CNN进行训练的原因*：
+
 在一般的神经网络中，每个像素都都与每一个神经元相连。增加的计算负荷使得网络在这种情况下不太准确。
 
 而对于CNN来说，并不是所有上下层神经元都能直接相连，而是通过“卷积核”作为中介。卷积神经网络使得图像处理可以通过邻近度对连接进行滤波而计算可管理。在给定层中，卷积神经网络不是将每个输入连接到每个神经元，而是有意限制了连接，使得任何一个神经元仅从它之前的层的小部分接受输入（例如5 * 5或3 * 3像素）。因此，每个神经元只负责处理图像的某一部分。同一个卷积核在所有图像内是共享的，图像通过卷积操作后仍然保留原先的位置关系。

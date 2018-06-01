@@ -142,5 +142,10 @@ if __name__ == "__main__":
     d1 = f.create_dataset('test_codename', data=code_list_asc)
 ```
 
-同时利用以下代码（`\VER.1 Verification\createDataset.py`）生成datesets并放入了`\VER.1 Verification\datasets`的文件夹内。
+同时利用以下代码（`\VER.1 Verification\createDataset.py`）**生成datesets**并放入了`\VER.1 Verification\datasets`的文件夹内。
 
+每张图片由任意4个数字和大小写英文字母组成，并同时加入随机不同颜色的若干干扰字。
+
+**图片示例如下**：
+
+![验证码图片样例](Verification-Code-sample.png)

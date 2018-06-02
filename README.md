@@ -143,7 +143,7 @@ if __name__ == "__main__":
 ```
 
 同时利用以下代码（`/VER.1 Verification/createDataset.py`）**生成datesets**并放入了`/VER.1 Verification/datasets`的文件夹内：
-```
+```py
 import h5py
 from PIL import Image
 import numpy as np
@@ -195,7 +195,7 @@ if __name__ == '__main__':
 虽然Python现在已有较为常用的光学字符识别包pytesseract，但是最后的识别率并不是很高。所以选择了目前更为主流的深度学习进行验证码的训练和验证。查阅了相关资料后，CNN特别适用于对于图片的识别，故决定选用名为Keras的深度学习框架搭建CNN。在参考学习了Coursera上由deeplearning.ai开设的深度学习课程（[Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)）之后，具体为第四门课（[Convolutional Neural Networks](https://www.coursera.org/learn/convolutional-neural-networks)）第二周目名为The Happy House的model（用于识别人脸是否开心）（`/VER.1 Verification/Keras+-+Tutorial+-+Happy+House+v2.ipynb`），自行对应教学文档的格式写出了适用于验证码识别的程序，并修改了部分卷积神经网络的结构。
 
 **完整代码（训练+验证）**（`/VER.1 Verification/model.py`）如下，jupyter notebook格式（`/VER.1 Verification/model.ipynb`）：
-```
+```py
 import keras.backend as K
 import matplotlib.pyplot as plt
 import numpy as np
@@ -407,9 +407,11 @@ Epoch 3/3
 
 ## VER.2  Pred
 
+### 数据集收集
+
 因为本次尝试会构建更复杂的神经网络，考虑到电脑显卡的性能问题，如果将训练图片一次性生成，对电脑的负载过大。所以**定义了一个数据生成器，在训练的过程中同时利用CPU生成大量数据**（随用随生，随生随删）所以不会真正占用存储空间，**故没有现成的数据集**。
 
 这里直接利用了python已有的生成验证码的库captcha，每张图片由任意4个数字和大写英文字母组成，并同时加入随机不同颜色的若干噪点。
 
 
-### 数据集收集
+

@@ -409,9 +409,64 @@ Epoch 3/3
 
 ### 数据集收集
 
-因为本次尝试会构建更复杂的神经网络，考虑到电脑显卡的性能问题，如果将训练图片一次性生成，对电脑的负载过大。所以**定义了一个数据生成器，在训练的过程中同时利用CPU生成大量数据**（随用随生，随生随删）所以不会真正占用存储空间，**故没有现成的数据集**。
+因为本次尝试会构建更复杂的神经网络，考虑到电脑显卡的性能问题，如果将训练图片一次性生成，对电脑的负载过大。所以**定义了一个数据生成器**，在训练的过程中同时利用CPU生成大量数据**（随用随生，随生随删）所以不会真正占用存储空间，**故没有现成的数据集**。
 
-这里直接利用了python已有的生成验证码的库captcha，每张图片由任意4个数字和大写英文字母组成，并同时加入随机不同颜色的若干噪点。
+这里直接利用了python已有的生成验证码的库captcha，每张图片由任意4个数字和大写英文字母组成，并同时加入随机不同颜色的若干噪点。代码如下：
+```py
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "5,6"
+from captcha.image import ImageCaptcha
+import matplotlib.pyplot as plt
+import numpy as np
+import random
+from keras import layers, optimizers, regularizers
+from keras.layers import Activation, Conv2D, Dense, Dropout, Flatten, Input, MaxPooling2D, ZeroPadding2D
+from keras.models import Model
 
+get_ipython().run_line_magic('matplotlib', 'inline')
+get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
+
+import string
+characters = string.digits + string.ascii_uppercase
+print(characters)
+
+width, height, n_len, n_class = 170, 80, 4, len(characters)
+
+
+# In[2]:
+
+
+from keras.utils.np_utils import to_categorical
+
+def gen(batch_size=32):
+    X = np.zeros((batch_size, height, width, 3), dtype=np.uint8)
+    y = [np.zeros((batch_size, n_class), dtype=np.uint8) for i in range(n_len)]
+    generator = ImageCaptcha(width=width, height=height)
+    while True:
+        for i in range(batch_size):
+            random_str = ''.join([random.choice(characters) for j in range(4)])
+            X[i] = generator.generate_image(random_str)
+            for j, ch in enumerate(random_str):
+                y[j][i, :] = 0
+                y[j][i, characters.find(ch)] = 1
+        yield X, y
+
+
+# In[3]:测试生成器
+
+
+def decode(y):
+    y = np.argmax(np.array(y), axis=2)[:,0]
+    return ''.join([characters[x] for x in y])
+
+X, y = next(gen(1))
+plt.imshow(X[0])
+plt.title(decode(y))
+```
+
+**图片示例如下**：
+
+![验证码图片样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.2%20Pred/output.png)
 
 

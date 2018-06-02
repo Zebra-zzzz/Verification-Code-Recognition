@@ -192,7 +192,7 @@ if __name__ == '__main__':
 
 **本实验采用Python软件作为英文文字识别的工具**
 
-虽然Python现在已有较为常用的光学字符识别包pytesseract，但是最后的识别率并不是很高。所以选择了目前更为主流的深度学习进行验证码的训练和验证。查阅了相关资料后，CNN特别适用于对于图片的识别，故决定选用名为Keras的深度学习框架搭建CNN。在参考学习了Coursera上由deeplearning.ai开设的深度学习课程（[Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)）之后，具体为第四门课（[Convolutional Neural Networks](https://www.coursera.org/learn/convolutional-neural-networks)）第二周目名为The Happy House的model（用于识别人脸是否开心）（`/VER.1 Verification/Keras+-+Tutorial+-+Happy+House+v2.ipynb`），自行对应教学文档的格式写出了适用于验证码识别的程序，并修改了部分卷积神经网络的结构。
+虽然Python现在已有较为常用的光学字符识别包pytesseract，但是最后的识别率并不是很高。所以选择了目前更为主流的深度学习进行验证码的训练和验证。查阅了相关资料后，CNN特别适用于对于图片的识别，**故决定选用名为Keras的深度学习框架搭建CNN**。在参考学习了Coursera上由deeplearning.ai开设的深度学习课程（[Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)）之后，具体为第四门课（[Convolutional Neural Networks](https://www.coursera.org/learn/convolutional-neural-networks)）第二周目名为The Happy House的model（用于识别人脸是否开心）（`/VER.1 Verification/Keras+-+Tutorial+-+Happy+House+v2.ipynb`），自行对应教学文档的格式写出了适用于验证码识别的程序，并修改了部分卷积神经网络的结构。
 
 **完整代码（训练+验证）**（`/VER.1 Verification/model.py`）如下，jupyter notebook格式（`/VER.1 Verification/model.ipynb`）：
 ```py
@@ -473,13 +473,13 @@ plt.title(decode(y))
 
 本实验采用Python软件作为英文文字识别的工具。
 
-本次实验依然选用Keras构建CNN，鉴于VER.1 Verification最后出现了过拟合的情况，故参考了Keras官方文档的VGG16结构。
+本次实验依然选用Keras构建CNN，鉴于VER.1 Verification最后出现了过拟合的情况，故参考了Keras官方文档的**VGG16结构**。
 
 本次构建的深度卷积网络结构为：特征提取部分使用的是两个卷积，一个池化的结构。之后再将它Flatten，然后添加Dropout。因为每个图片对应的是四位字母和数字的组合，每个字符又对应36种可能性，所以最后连接四个分类器，每个分类器是36个神经元，分别输出36个字符的概率。
 
 特征提取部分的结构参考了VGG16，来源：（[Keras官方文档](https://keras.io/applications/#vgg16)）
 
-训练部分代码如下：
+**训练部分代码如下**：
 ```py
 from keras.models import *
 from keras.layers import *
@@ -536,9 +536,9 @@ model1 = load_model('zzw.h5')
 
 model1.summary()
 ```
-因训练时间较长，故将训练的结果单独保存为了train.h5文件，并在验证程序中调用，方便后期调试。
+因训练时间较长，**故将训练的结果单独保存为了train.h5文件，并在验证程序中调用，方便后期调试**。
 
-本次实验设置的epoch本身为10次，但是在训练过程中很快就出现了较高的正确率，且后期正确率几乎没有明显的提升，为防止后期重新出现过拟合的情况，采取了Early stopping。
+本次实验设置的epoch本身为10次，但是在训练过程中很快就出现了较高的正确率，且后期正确率几乎没有明显的提升，为防止后期重新出现过拟合的情况，采取了**Early stopping**。
 
 ```
 Epoch 1/10
@@ -552,3 +552,135 @@ Epoch 3/10
 ---------------------------------------------------------------------------
 KeyboardInterrupt                         Traceback (most recent call last)
 ```
+
+### 分析与评价
+
+**验证部分代码如下：**
+```py
+import keras.backend as K
+import matplotlib.pyplot as plt
+import numpy as np
+from keras import layers, optimizers, regularizers
+from keras.applications.imagenet_utils import preprocess_input
+from keras.layers import (Activation, AveragePooling2D, BatchNormalization,
+                          Conv2D, Dense, Dropout, Flatten,
+                          GlobalAveragePooling2D, GlobalMaxPooling2D, Input,
+                          MaxPooling2D, ZeroPadding2D, ActivityRegularization)
+from keras.models import Model, load_model
+from keras.preprocessing import image
+from keras.utils import layer_utils, plot_model
+from keras.utils.data_utils import get_file
+from keras.utils.vis_utils import model_to_dot
+from matplotlib.pyplot import imshow
+from utils import *
+
+import string
+
+
+# In[2]:
+
+
+characters = string.digits + string.ascii_uppercase
+print(characters)
+n_class, n_len = len(characters), 4 #一共36个字符，每个验证码4个字符
+
+K.set_image_data_format('channels_last')
+
+
+# In[3]:
+
+
+model = load_model('train.h5')
+
+
+# In[5]:
+
+
+from captcha.image import ImageCaptcha
+import matplotlib.pyplot as plt
+import numpy as np
+import random
+
+from keras.utils.np_utils import to_categorical
+
+def gen(batch_size=32):
+    X = np.zeros((batch_size, height, width, 3), dtype=np.uint8)
+    y = [np.zeros((batch_size, n_class), dtype=np.uint8) for i in range(n_len)]
+    generator = ImageCaptcha(width=width, height=height)
+    while True:
+        for i in range(batch_size):
+            random_str = ''.join([random.choice(characters) for j in range(4)])
+            X[i] = generator.generate_image(random_str)
+            for j, ch in enumerate(random_str):
+                y[j][i, :] = 0
+                y[j][i, characters.find(ch)] = 1
+        yield X, y
+
+
+# In[6]:
+
+
+width, height, n_len, n_class = 170, 80, 4, len(characters)
+from tqdm import tqdm
+def evaluate(model, batch_num=30):
+    batch_acc = 0
+    generator = gen()
+    for i in tqdm(range(batch_num)):
+        X, y = generator.__next__()
+        y_pred = model.predict(X)
+        
+        ArgA = np.array([np.argmax(y, axis=2).T]).squeeze()
+        ArgPred = np.argmax(y_pred, axis=2).T 
+        #print(ArgA, ArgPred)
+        
+        for j in range(32):
+            #print(j, ArgA[j], ArgPred[j])
+            batch_acc += np.array_equal(ArgA[j], ArgPred[j])
+
+    return batch_acc / (30 * 32)
+
+print(evaluate(model)) #验证的正确率
+
+
+# In[7]:
+
+
+# In[8]:
+
+
+from PIL import Image
+
+
+# In[9]:
+
+
+def decode(y):
+    y = np.argmax(np.array(y), axis=2)[:,0]
+    return ''.join([characters[x] for x in y])
+
+def pred_decode(pred):
+    y = pred.squeeze()
+    return ''.join([characters[x] for x in y])
+
+g = gen(1)
+X, y = g.__next__()
+Img = Image.fromarray(X[0])
+Img.show()
+
+pred = model.predict(np.asarray([X[0]]))
+ArgPred = np.argmax(pred, axis=2).T 
+pred_str = pred_decode(ArgPred)
+print("The prediction result is: " + pred_str) #任意显示一张验证的结果
+```
+
+本次实验最后的验证结果较好，总体正确率可达0.96。运行结果如下所示：
+```
+100%|██████████████████████████████████████████████████████████████████████████████████| 30/30 [00:19<00:00,  1.57it/s]
+0.9614583333333333
+```
+
+**下为一个输出样例**：
+![输出样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.2%20Pred/final-output.png)
+
+**在Visual Studio Code端运行的完整验证样例**：
+![输出样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.2%20Pred/final-output.png)

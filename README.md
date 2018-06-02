@@ -683,4 +683,4 @@ print("The prediction result is: " + pred_str) #任意显示一张验证的结�
 ![输出样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.2%20Pred/final-output.png)
 
 **在Visual Studio Code端运行的完整验证样例**：
-![输出样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.2%20Pred/final-output-2.png)
+![输出样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.2%20Pred/final-output-2%20.png)

@@ -479,4 +479,76 @@ plt.title(decode(y))
 
 特征提取部分的结构参考了VGG16，来源：（[Keras官方文档](https://keras.io/applications/#vgg16)）
 
+训练部分代码如下：
+```py
+from keras.models import *
+from keras.layers import *
 
+def cnnModel(input_shape):
+    x = Input(input_shape)
+    X_Input = x
+    for i in range(4):
+        x = Conv2D(32*2**i, (3, 3), activation='relu')(x)
+        x = Conv2D(32*2**i, (3, 3), activation='relu')(x)
+        x = MaxPooling2D((2, 2))(x)
+
+    x = Flatten()(x)
+    x = Dropout(0.25)(x)
+    x = [Dense(n_class, activation='softmax', name='c%d'%(i+1))(x) for i in range(4)]
+    model = Model(inputs=X_Input, outputs=x, name='cnnModel')
+    return model
+
+
+# In[5]:
+
+
+input_shape = (height, width, 3)
+model = cnnModel(input_shape)
+
+
+# In[6]:
+
+
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+
+
+# In[7]:
+
+
+#model.fit_generator(gen(), samples_per_epoch=51200, nb_epoch=5,
+#                   validation_data=gen(), nb_val_samples=1280)
+model.compile(loss='categorical_crossentropy',
+              optimizer='adadelta',
+              metrics=['accuracy'])
+earlystopper = EarlyStopping(patience=5, verbose=1)
+checkpointer = ModelCheckpoint('zzw.h5', verbose=1, save_best_only=True)
+model.fit_generator(gen(), samples_per_epoch = 25600, epochs = 10, validation_steps = 40, validation_data = gen(), callbacks=[earlystopper, checkpointer])
+
+
+# In[8]:
+
+
+model1 = load_model('zzw.h5')
+
+
+# In[9]:
+
+
+model1.summary()
+```
+因训练时间较长，故将训练的结果单独保存为了train.h5文件，并在验证程序中调用，方便后期调试。
+
+本次实验设置的epoch本身为10次，但是在训练过程中很快就出现了较高的正确率，且后期正确率几乎没有明显的提升，为防止后期重新出现过拟合的情况，采取了Early stopping。
+
+```py
+Epoch 1/10
+25599/25600 [============================>.] - ETA: 0s - loss: 1.8130 - c1_loss: 0.4643 - c2_loss: 0.4386 - c3_loss: 0.4638 - c4_loss: 0.4464 - c1_acc: 0.8739 - c2_acc: 0.8804 - c3_acc: 0.8737 - c4_acc: 0.8787- ETA: 2s - loss: 1.8146 - c1_loss: 0.4647 - c2_loss: 0.4390 - c3_loss: 0.4642 - c4_loss: 0.4468 - c1_acc: 0.8738 - c2_acc: 0.8803 - c3_acc:Epoch 00001: val_loss improved from inf to 0.18223, saving model to zzw.h5
+25600/25600 [==============================] - 2498s 98ms/step - loss: 1.8130 - c1_loss: 0.4643 - c2_loss: 0.4386 - c3_loss: 0.4638 - c4_loss: 0.4464 - c1_acc: 0.8739 - c2_acc: 0.8804 - c3_acc: 0.8737 - c4_acc: 0.8787 - val_loss: 0.1822 - val_c1_loss: 0.0426 - val_c2_loss: 0.0378 - val_c3_loss: 0.0557 - val_c4_loss: 0.0461 - val_c1_acc: 0.9898 - val_c2_acc: 0.9953 - val_c3_acc: 0.9867 - val_c4_acc: 0.9914
+Epoch 2/10
+25599/25600 [============================>.] - ETA: 0s - loss: 0.1413 - c1_loss: 0.0311 - c2_loss: 0.0348 - c3_loss: 0.0392 - c4_loss: 0.0362 - c1_acc: 0.9933 - c2_acc: 0.9919 - c3_acc: 0.9906 - c4_acc: 0.9918- ETA: 3s - loss: 0.1414 - c1_loss: 0.0311 - c2_loss: 0.0349 - c3_loss: 0.0392 - c4_loss: 0.0362 - c1_acc: 0.9933 - c2_acc: 0.9919 - Epoch 00002: val_loss did not improve
+25600/25600 [==============================] - 2493s 97ms/step - loss: 0.1413 - c1_loss: 0.0311 - c2_loss: 0.0348 - c3_loss: 0.0392 - c4_loss: 0.0362 - c1_acc: 0.9933 - c2_acc: 0.9919 - c3_acc: 0.9906 - c4_acc: 0.9918 - val_loss: 0.2113 - val_c1_loss: 0.0480 - val_c2_loss: 0.0583 - val_c3_loss: 0.0545 - val_c4_loss: 0.0504 - val_c1_acc: 0.9938 - val_c2_acc: 0.9914 - val_c3_acc: 0.9914 - val_c4_acc: 0.9914
+Epoch 3/10
+  676/25600 [..............................] - ETA: 37:09 - loss: 0.0748 - c1_loss: 0.0165 - c2_loss: 0.0188 - c3_loss: 0.0218 - c4_loss: 0.0177 - c1_acc: 0.9951 - c2_acc: 0.9938 - c3_acc: 0.9929 - c4_acc: 0.9946
+---------------------------------------------------------------------------
+KeyboardInterrupt                         Traceback (most recent call last)
+```

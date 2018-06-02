@@ -540,7 +540,7 @@ model1.summary()
 
 本次实验设置的epoch本身为10次，但是在训练过程中很快就出现了较高的正确率，且后期正确率几乎没有明显的提升，为防止后期重新出现过拟合的情况，采取了Early stopping。
 
-```py
+```
 Epoch 1/10
 25599/25600 [============================>.] - ETA: 0s - loss: 1.8130 - c1_loss: 0.4643 - c2_loss: 0.4386 - c3_loss: 0.4638 - c4_loss: 0.4464 - c1_acc: 0.8739 - c2_acc: 0.8804 - c3_acc: 0.8737 - c4_acc: 0.8787- ETA: 2s - loss: 1.8146 - c1_loss: 0.4647 - c2_loss: 0.4390 - c3_loss: 0.4642 - c4_loss: 0.4468 - c1_acc: 0.8738 - c2_acc: 0.8803 - c3_acc:Epoch 00001: val_loss improved from inf to 0.18223, saving model to zzw.h5
 25600/25600 [==============================] - 2498s 98ms/step - loss: 1.8130 - c1_loss: 0.4643 - c2_loss: 0.4386 - c3_loss: 0.4638 - c4_loss: 0.4464 - c1_acc: 0.8739 - c2_acc: 0.8804 - c3_acc: 0.8737 - c4_acc: 0.8787 - val_loss: 0.1822 - val_c1_loss: 0.0426 - val_c2_loss: 0.0378 - val_c3_loss: 0.0557 - val_c4_loss: 0.0461 - val_c1_acc: 0.9898 - val_c2_acc: 0.9953 - val_c3_acc: 0.9867 - val_c4_acc: 0.9914

@@ -469,4 +469,14 @@ plt.title(decode(y))
 
 ![验证码图片样例](https://github.com/Zebra-zzzz/Verification-Code-Recognition/blob/master/VER.2%20Pred/output.png)
 
+### 方法挑选
+
+本实验采用Python软件作为英文文字识别的工具。
+
+本次实验依然选用Keras构建CNN，鉴于VER.1 Verification最后出现了过拟合的情况，故参考了Keras官方文档的VGG16结构。
+
+本次构建的深度卷积网络结构为：特征提取部分使用的是两个卷积，一个池化的结构。之后再将它Flatten，然后添加Dropout。因为每个图片对应的是四位字母和数字的组合，每个字符又对应36种可能性，所以最后连接四个分类器，每个分类器是36个神经元，分别输出36个字符的概率。
+
+特征提取部分的结构参考了VGG16，来源：（[Keras官方文档](https://keras.io/applications/#vgg16)）
+
 

@@ -479,7 +479,7 @@ plt.title(decode(y))
 
 特征提取部分的结构参考了VGG16，来源：（[Keras官方文档](https://keras.io/applications/#vgg16)）
 
-**训练部分代码如下**（`/VER.2 Pred/train.py`）：
+**训练部分代码如下**（`/VER.2 Pred/train.py`），jupyter notebook格式（`/VER.2 Pred/train.ipynb`）：
 ```py
 from keras.models import *
 from keras.layers import *
@@ -555,7 +555,7 @@ KeyboardInterrupt                         Traceback (most recent call last)
 
 ### 分析与评价
 
-**验证部分代码如下**（`/VER.2 Pred/pred.py`）:
+**验证部分代码如下**（`/VER.2 Pred/pred.py`），jupyter notebook格式（`/VER.2 Pred/pred.ipynb`）:
 ```py
 import keras.backend as K
 import matplotlib.pyplot as plt

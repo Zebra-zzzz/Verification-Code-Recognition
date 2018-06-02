@@ -411,7 +411,7 @@ Epoch 3/3
 
 因为本次尝试会构建更复杂的神经网络，考虑到电脑显卡的性能问题，如果将训练图片一次性生成，对电脑的负载过大。所以**定义了一个数据生成器**，在训练的过程中同时利用CPU生成大量数据**（随用随生，随生随删）所以不会真正占用存储空间，**故没有现成的数据集**。
 
-这里直接利用了python已有的生成验证码的库captcha，每张图片由任意4个数字和大写英文字母组成，并同时加入随机不同颜色的若干噪点。代码如下：
+这里直接利用了python已有的生成验证码的库captcha，每张图片由任意4个数字和大写英文字母组成，并同时加入随机不同颜色的若干噪点。代码如下（`/VER.2 Pred/train.py`）：
 ```py
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -479,7 +479,7 @@ plt.title(decode(y))
 
 特征提取部分的结构参考了VGG16，来源：（[Keras官方文档](https://keras.io/applications/#vgg16)）
 
-**训练部分代码如下**：
+**训练部分代码如下**（`/VER.2 Pred/train.py`）：
 ```py
 from keras.models import *
 from keras.layers import *
@@ -536,7 +536,7 @@ model1 = load_model('zzw.h5')
 
 model1.summary()
 ```
-因训练时间较长，**故将训练的结果单独保存为了train.h5文件，并在验证程序中调用，方便后期调试**。
+因训练时间较长，**故将训练的结果单独保存为了train.h5(（`/VER.2 Pred`）文件，并在验证程序中调用，方便后期调试**。
 
 本次实验设置的epoch本身为10次，但是在训练过程中很快就出现了较高的正确率，且后期正确率几乎没有明显的提升，为防止后期重新出现过拟合的情况，采取了**Early stopping**。
 
@@ -555,7 +555,7 @@ KeyboardInterrupt                         Traceback (most recent call last)
 
 ### 分析与评价
 
-**验证部分代码如下：**
+**验证部分代码如下**（`/VER.2 Pred/pred.py`）:
 ```py
 import keras.backend as K
 import matplotlib.pyplot as plt
